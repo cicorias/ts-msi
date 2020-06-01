@@ -8,5 +8,8 @@
   },
   "keywords": [],
   "author": "Shawn Cicoria <github@cicoria.com> (https://cicoria.com)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@azure/identity": "^1.0.3"
+  }
 }
