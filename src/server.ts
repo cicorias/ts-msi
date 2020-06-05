@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import express, { Application, Request, Response, NextFunction, RequestHandler } from 'express';
 import bodyParser from 'body-parser';
 
+import {TokenController} from './TokenController';
+
 /** This is a demo server used to test and validate the actual middleware which is in index.ts */
 
 
@@ -46,26 +48,26 @@ class StatusController {
 }
 
 /** this route provides token signing for testing only. */
-class SignController {
-  private status = 'use POST with a json jwt payload';
-  public router = express.Router();
+// class SignController {
+//   private status = 'use POST with a json jwt payload';
+//   public router = express.Router();
 
-  constructor() {
-    this.router.get('/sign', this.getSign);
-    this.router.post('/sign', this.sign);
-  }
+//   constructor() {
+//     this.router.get('/sign', this.getSign);
+//     this.router.post('/sign', this.sign);
+//   }
 
-  getSign = (request: express.Request, response: express.Response) => {
-    return response.send(this.status);
-  };
+//   getSign = (request: express.Request, response: express.Response) => {
+//     return response.send(this.status);
+//   };
 
-  sign = (request: express.Request, response: express.Response) => {
-    // const options: SignOptions = { algorithm: 'HS256'}
-    // const rv = jwt.sign(request.body, sharedSecret, options)
-    return response.send('sign NOTR');
-  };
+//   sign = (request: express.Request, response: express.Response) => {
+//     // const options: SignOptions = { algorithm: 'HS256'}
+//     // const rv = jwt.sign(request.body, sharedSecret, options)
+//     return response.send('sign NOTR');
+//   };
 
-}
+// }
 
 class App {
   public app: Application
@@ -118,7 +120,7 @@ const appWrapper = new App({
   controllers: [
     new UserController(),
     new StatusController(),
-    new SignController()
+    new TokenController()
   ],
   middleWares: [
     loggerMiddleware,
