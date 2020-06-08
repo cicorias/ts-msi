@@ -7,18 +7,59 @@
     "@azure/identity": "^1.0.3",
     "@azure/storage-blob": "^12.1.2",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.0",
+    "morgan": "^1.10.0",
+    "prettier": "^2.0.5",
+    "request": "^2.88.2",
     "typescript": "^3.9.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/mocha": "^7.0.2",
+    "encoding": "^0.1.12",
+    "envalid": "^6.0.2",
+    "gulp": "^4.0.2",
+    "iconv": "^3.0.0",
+    "node-fetch": "^2.6.0",
+    "request-promise": "^4.2.5"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run lint && npm run prepare",
+    "full-build": "npm run clean && npm run lint && npm test && npm run copy",
+    "build-dev": "rimraf build && npm run lint && npm run copy",
     "start": "node ./build/server.js",
-    "build": "npx tsc --build ."
+    "pretest": "npm run format && tsc",
+    "test": "mocha build/test --reporter mocha-junit-reporter",
+    "nyctest": "nyc mocha",
+    "watch": "mocha-typescript-watch",
+    "prepare": "npm run clean && tsc -p tsconfig.json",
+    "check-format": "prettier --list-different \"./src/**/*.{ts,js,json,md}\"",
+    "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
+    "lint": "tslint -p tsconfig.json",
+    "copy": "gulp copy",
+    "watch-changes": "gulp watch",
+    "clean": "rimraf build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint",
+      "npm run format",
+      "npm test",
+      "git add"
+    ]
   },
   "keywords": [],
   "author": "Shawn Cicoria <github@cicoria.com> (https://cicoria.com)",
