@@ -19,14 +19,28 @@ import { TokenController } from "./TokenController";
 /** This is a demo server used to test and validate the actual middleware which is in index.ts */
 
 dotenv.config();
+const { str, port, json } = envalid
 
 const env = envalid.cleanEnv(process.env, {
-  PORT: envalid.port({
+  PORT: port({
     example: "4000",
     default: 4000,
     desc: "The localhost port on which this sample would run",
   }),
+  AZURE_TENANT_ID: str({
+    default: "microsoft",
+    desc: "AD tenant id or name",
+  }),
+  AZURE_CLIENT_ID: str({
+    default: "microsoft",
+    desc: "ID of the user/service principal to authenticate as",
+  }),
+  AZURE_CLIENT_SECRET: str({
+    default: "microsoft",
+    desc: "client secret used to authenticate to Azure AD",
+  }),
 });
+
 
 const loggerMiddleware = (req: Request, resp: Response, next: NextFunction) => {
   console.log("Request logged:", req.method, req.path);

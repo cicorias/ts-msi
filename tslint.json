@@ -12,7 +12,8 @@
     "interface-name": false,
     "member-ordering": false,
     "jsdoc-format": false,
-    "no-console": false
+    "no-console": false,
+    "no-trailing-whitespace": false
   },
   "rulesDirectory": [],
   "linterOptions": {
