@@ -5,6 +5,7 @@ import {
 import { BlobServiceClient, newPipeline, AnonymousCredential } from "@azure/storage-blob";
 import express from "express";
 import moment from "moment";
+import { Logger } from "../middleware/logger";
 
 // ONLY AVAILABLE IN NODE.JS RUNTIME
 // DefaultAzureCredential will first look for Azure Active Directory (AAD)
@@ -72,9 +73,9 @@ export class TokenController {
                 const createContainerResponse = await blobServiceClient
                     .getContainerClient(containerName)
                     .create();
-                console.log("Created container ${containerName} successfully", createContainerResponse.requestId);
+                Logger.Info(`Created container ${containerName} successfully`);
             } catch (err) {
-                console.log(
+                Logger.Critical(
                     `Creating a container failed, requestId=${err.details.requestId}, statusCode=${err.statusCode}, errorCode=${err.errorCode}`
                 ); 
                 reject(err);
@@ -88,7 +89,7 @@ export class TokenController {
             
                 resolve(udKey.value);
             } catch (err) {
-                console.log(
+                Logger.Critical(
                     `Getting user delegation key failed, requestId=${err.details.requestId}, statusCode=${err.statusCode}, errorCode=${err.errorCode}`
                 )
                 reject(err);
@@ -97,7 +98,7 @@ export class TokenController {
     }
 
 
-    public async uploadBlob(containerName: string, blobName: string, sasToken: string): Promise<number> {
+    private async uploadBlob(containerName: string, blobName: string, sasToken: string): Promise<number> {
         return new Promise(async (resolve, reject) => {
             const pipeline = newPipeline(new AnonymousCredential(), {
                 // httpClient: MyHTTPClient, // A customized HTTP client implementing IHttpClient interface
@@ -126,13 +127,13 @@ export class TokenController {
                 const uploadBlobResponse = await blockBlobClient.uploadFile(this.localFilePath, {
                     blockSize: 4 * 1024 * 1024, // 4MB block size
                     concurrency: 20, // 20 concurrency
-                    onProgress: (ev) => console.log(ev)
+                    onProgress: (ev) => Logger.Info(`Bytes loaded: ${ev.loadedBytes}`)
                   });
                 // const uploadBlobResponse = await blockBlobClient.upload(content, Buffer.byteLength(content));
 
                 resolve(uploadBlobResponse._response.status);
             } catch (err) {
-                console.log(
+                Logger.Critical(
                     `Getting user delegation key failed, requestId=${err.details.requestId}, statusCode=${err.statusCode}, errorCode=${err.errorCode}`
                 )
                 reject(err);
@@ -141,28 +142,6 @@ export class TokenController {
     }
 
 
-    private signBlob(blobUrl: string): string {
-        const client: BlobServiceClient = new BlobServiceClient(
-            "https://dannygdevsta.blob.core.windows.net/sampledata",
-            this.defaultCredential
-        );
 
-        const iss: Date = new Date();
-        const exp: Date = new Date(); // timeinterval of 1 hour needed.
 
-        const s = "";
-        const k = this.defaultCredential
-            .getToken("")
-            .then((token) => {
-            client.getUserDelegationKey(iss, exp);
-            })
-            .then((sas) => {
-            console.log(sas);
-            })
-            .catch((err) => {
-            console.error(err);
-            });
-
-        return "";
-    }
 }

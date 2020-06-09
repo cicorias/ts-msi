@@ -12,9 +12,10 @@ import envalid from "envalid"; // to validate the environment variables presence
 import cors from "cors"; //  to configure Express to add CORS
 import helmet from "helmet"; // to secure Express APIs by defining various HTTP headers.
 import morgan from "morgan"; // adds some logging capabilities to this Express API.
-import { StatusController } from "./StatusController";
-import { ClientController } from "./ClientController";
-import { TokenController } from "./TokenController";
+import { StatusController } from "./api/components/StatusController";
+import { StorageController } from "./api/components/StorageController";
+import { TokenController } from "./api/components/TokenController";
+import { Logger } from "./api/middleware/logger";
 
 /** This is a demo server used to test and validate the actual middleware which is in index.ts */
 
@@ -43,11 +44,9 @@ const env = envalid.cleanEnv(process.env, {
 
 
 const loggerMiddleware = (req: Request, resp: Response, next: NextFunction) => {
-  console.log("Request logged:", req.method, req.path);
+  Logger.Info(`Request logged:  ${req.method}, ${req.path}`);
   next();
 };
-
-const sharedSecret = "notasecret";
 
 class App {
   public app: Application;
@@ -75,6 +74,13 @@ class App {
     this.routes(appInit.controllers);
     this.assets();
     this.template();
+
+    const consoleLogger: any = {
+      log: (severityName: string, message: string, metadata: any) => {
+        console.log(message, severityName, metadata);
+      }
+    };
+    Logger.initialize(true, consoleLogger);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,7 +113,7 @@ class App {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(`App listening on the http://localhost:${this.port}`);
+      Logger.Log(`App listening on the http://localhost:${this.port}`);
     });
   }
 }
@@ -115,7 +121,7 @@ class App {
 const appWrapper = new App({
   port: !env.PORT ? 4000 : env.PORT,
   controllers: [
-    new ClientController(),
+    new StorageController(),
     new StatusController(),
     new TokenController(),
   ],
