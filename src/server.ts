@@ -14,7 +14,6 @@ import helmet from "helmet"; // to secure Express APIs by defining various HTTP 
 import morgan from "morgan"; // adds some logging capabilities to this Express API.
 import { StatusController } from "./api/components/StatusController";
 import { StorageController } from "./api/components/StorageController";
-import { TokenController } from "./api/components/TokenController";
 import { Logger } from "./api/middleware/logger";
 
 /** This is a demo server used to test and validate the actual middleware which is in index.ts */
@@ -123,7 +122,6 @@ const appWrapper = new App({
   controllers: [
     new StorageController(),
     new StatusController(),
-    new TokenController(),
   ],
   middleWares: [
     loggerMiddleware,
