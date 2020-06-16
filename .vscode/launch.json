@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "outFiles": [
+          "${workspaceFolder}/**/*.js"
+        ],
+      "program": "${workspaceFolder}/src/server.ts",
+      "skipFiles": ["node_modules/**"]
+    }
+  ]
+}
