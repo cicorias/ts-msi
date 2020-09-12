@@ -26,7 +26,7 @@
     "envalid": "^6.0.2",
     "gulp": "^4.0.2",
     "iconv": "^3.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "request-promise": "^4.2.5",
     "timecount": "^1.1.0",
     "winston": "^3.2.1"
